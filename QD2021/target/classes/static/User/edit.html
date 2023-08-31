@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="../">
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/template.js"></script>
+<script type="text/javascript" src="js/base.js"></script>
+<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="css/bootstrap.min.css" >
+<link rel="stylesheet" href="css/base.css" >
+</head>
+<body>
+<form class="form-horizontal" >
+<input name="id" type="hidden" value="0">
+<div class="form-group">
+    <label >用户名称</label>
+    <input type="text" class="form-control"  name="name" placeholder="录入名称">
+  </div>
+  <div class="form-group">
+    <label >用户性别</label>
+    <select name="sex"  class="form-control" >
+    </select>
+  </div>
+    <div class="form-group">
+    <label >部门</label>
+     <select name="department_id"  class="form-control" ></select>
+  </div>
+<button type="button" class="btn btn-default"  onclick="save();">保存</button>
+</form>
+
+<script type="text/javascript">
+
+var id=getParam("id");
+var url="User/insert";
+$(function(){
+	if(id>0){
+		url="User/update";
+		$.get("User/getInfo",{id:id},function(json){
+			setValues($("form"),json.data);
+			setSelect($("[name=sex]"),"User/getArrays?name=sexs",json.data.sex);
+			setList($("[name=department_id]"),"Department/getlist",json.data.department_id);
+		},"json")
+	}else{
+		setSelect($("[name=sex]"),"User/getArrays?name=sexs",0);
+		setList($("[name=department_id]"),"Department/getlist",0);
+	}
+	
+})
+
+function save(){
+	var data=$("form").serialize();
+	$.post(url,data,function(json){
+		if(json.status>0){
+			closeLayer();
+			parent.location.reload();
+		}
+	},"json")
+}
+</script>
+</body>
+</html>
