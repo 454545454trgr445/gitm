@@ -1,0 +1,13 @@
+form{
+	width: 80%;padding: 5px;margin-left: 10%;
+}
+.search{
+	display: inline;
+    width: 30%;
+    margin-left: 10px;
+}
+
+.pageinfo{
+	margin-left: 10px;
+}
+.pageinfo a{margin-left: 10px;}

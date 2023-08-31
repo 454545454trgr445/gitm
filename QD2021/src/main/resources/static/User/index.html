@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="../">
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/template.js"></script>
+<script type="text/javascript" src="js/base.js"></script>
+<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="css/bootstrap.min.css" >
+<link rel="stylesheet" href="css/base.css" >
+</head>
+<body>
+<script type="text/html" id="template1">
+	<% for(var i=0;i<data.length;i++){ 
+		var item=data[i];
+	%>
+		<tr><td><%=item.name%></td>
+<td><%=item.sexname%></td>
+<td><%=item.department_name%></td>
+				<td>
+				<a href="javascript:;" onclick="edit(this,<%=item.id%>)">修改</a>
+				<a href="javascript:;" onclick="del(this,<%=item.id%>)">删除</a>
+				</td>
+		</tr>
+    <%}%>
+</script>
+ <input type="text" class="form-control search" name="search" placeholder="录入查询的名称">
+ <button onclick="search();">查询</button>
+<button onclick="add();">新增</button>
+<table class="table table-bordered">
+ <thead>
+<tr><td>名称</td><td>性别</td><td>部门</td><td>功能</td></tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<div class="pageinfo">
+<a href="javascript:;" page="1">上一页</a>
+<a href="javascript:;" page="2">下一页</a>
+</div>
+<script type="text/javascript">
+function add(){
+	openLayer("User/edit.html","新增用户",["500px","400px"]);
+}
+function edit(target,id){
+	openLayer("User/edit.html?id="+id,"修改用户",["500px","400px"]);
+}
+function del(target,id){
+	
+	openConfirm("确认删除？",function(){
+		var self=$(target);
+		$.get("User/delete",{id:id},function(json){
+			if(json.status>0){
+				self.parents("tr").remove();
+			}
+		},"json")
+		
+	})
+	
+	
+	
+}
+
+function load(param){
+	$.get("User/index",param,function(json){
+		var myTemplate =  document.getElementById('template1').innerHTML; 
+		  var myHtml = miniTpl(myTemplate, json.data);
+		$("table tbody").empty();
+		$("table tbody").append($(myHtml));
+	},"json")
+}
+function search(){
+	var txt=$("[name=search]").val();
+	load({search:txt,pageno:1})
+}
+
+$(function(){
+	
+	load({})
+	
+	$(".pageinfo").on("click","a",function(){
+		var page= parseInt($(this).attr("page"));
+		$(".pageinfo a:eq(0)").attr("page",page>1?page-1:1);
+		$(".pageinfo a:eq(1)").attr("page",page+1);
+		var txt=$("[name=search]").val();
+		load({pageno:page,search:txt})
+		
+	})
+	
+})
+</script>
+
+</body>
+</html>

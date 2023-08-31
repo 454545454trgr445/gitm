@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="../">
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/template.js"></script>
+<script type="text/javascript" src="js/base.js"></script>
+<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="css/bootstrap.min.css" >
+<link rel="stylesheet" href="css/base.css" >
+</head>
+<body>
+<form class="form-horizontal" >
+<input name="id" type="hidden" value="0">
+<div class="form-group">
+    <label for="exampleInputEmail1">用户名称</label>
+    <input type="text" class="form-control"  name="name" placeholder="录入名称">
+  </div>
+<button type="button" class="btn btn-default"  onclick="save();">保存</button>
+</form>
+
+<script type="text/javascript">
+
+var id=getParam("id");
+var url="Department/insert";
+$(function(){
+	if(id>0){
+		url="Department/update";
+		$.get("Department/getInfo",{id:id},function(json){
+			setValues($("form"),json.data);
+		},"json")
+	}
+	
+})
+
+function save(){
+	var data=$("form").serialize();
+	$.post(url,data,function(json){
+		if(json.status>0){
+			closeLayer();
+			parent.location.reload();
+		}
+	},"json")
+}
+</script>
+</body>
+</html>
